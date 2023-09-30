@@ -4,7 +4,7 @@ class Vertex:
         self.edges = {}
         self.buildings = {"Left": None,"Right": None,"Top": None,"Bottom": None}
 
-    def add_edge(self, vertex, weight = 0):
+    def add_edge(self, vertex, weight = 1):
         self.edges[vertex] = weight 
     
     def add_building(self, building, loc):
