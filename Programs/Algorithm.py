@@ -1,31 +1,23 @@
-import heapq
+from heapq import heappop, heappush
+from math import inf
 
-def dijkstra(graph, start, end):
-    # Initialize distances and previous nodes
-    distances = {vertex: float('infinity') for vertex in graph}
-    distances[start] = 0
-    priority_queue = [(0, start)]
-
-    while priority_queue:
-        current_distance, current_vertex = heapq.heappop(priority_queue)
-
-        if current_distance > distances[current_vertex]:
-            continue
-
-        for neighbor, weight in graph[current_vertex].items():
-            distance = current_distance + weight
-
-            if distance < distances[neighbor]:
-                distances[neighbor] = distance
-                heapq.heappush(priority_queue, (distance, neighbor))
-
-    path = []
-    current = end
-    while current != start:
-        path.insert(0, (current, current.buildings))
-        current = min(
-            (neighbor for neighbor, weight in graph[current].items() if distances[current] == distances[neighbor] + weight),
-            key=lambda x: distances[x]
-        )
-    path.insert(0, (start, start.buildings))
-    return path
+def dijkstras(graph, start):
+  distances = {}
+  
+  for vertex in graph:
+    distances[vertex] = inf
+    
+  distances[start] = 0
+  vertices_to_explore = [(0, start)]
+  
+  while vertices_to_explore:
+    current_distance, current_vertex = heappop(vertices_to_explore)
+    
+    for neighbor, edge_weight in graph[current_vertex]:
+      new_distance = current_distance + edge_weight
+      
+      if new_distance < distances[neighbor]:
+        distances[neighbor] = new_distance
+        heappush(vertices_to_explore, (new_distance, neighbor))
+        
+  return distances
