@@ -1,6 +1,6 @@
 from Vertex import Vertex
 from Graph import Graph
-from Algorithm import dijkstra
+from Algorithm import a_star
 
 #Init graph
 Map = Graph()
@@ -158,4 +158,4 @@ Map.add_edge(N,M)
 Map.add_edge(N,E)
 N.add_building("Leviticus Cornwall Estate","Bottom")
 
-print(dijkstra(Map,"Town Hall","Emerald Ranch"))
+print(a_star(Map.graph_dict,A.value,F.value))
