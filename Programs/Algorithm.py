@@ -28,6 +28,7 @@ def a_star(graph, start, target):
         heappush(vertices_to_explore, (new_distance, neighbor))
         count += 1
         
-  print("Found a path from {0} to {1} in {2} steps: ".format(start.name, target.name, count), paths_and_distances[target][1])
+  print("Found a route from {0} to {1}: ".format(start.name, target.name))
+  print(paths_and_distances[target][1])
   
   
