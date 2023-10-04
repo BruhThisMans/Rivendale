@@ -1,161 +1,87 @@
 from Vertex import Vertex
-from Graph import Graph
 from Algorithm import a_star
-
-#Init graph
-Map = Graph()
+import time
 
 #Init vertex
-A = Vertex("A")
-B = Vertex("B")
-C = Vertex("C")
-D = Vertex("D")
-E = Vertex("E")
-F = Vertex("F")
-G = Vertex("G")
-H = Vertex("H")
-I = Vertex("I")
-J = Vertex("J")
-K = Vertex("K")
-L = Vertex("L")
-M = Vertex("M")
-N = Vertex("N")
-Map.add_vertex(A)
-Map.add_vertex(B)
-Map.add_vertex(C)
-Map.add_vertex(D) 
-Map.add_vertex(E)
-Map.add_vertex(F)
-Map.add_vertex(G)
-Map.add_vertex(H)
-Map.add_vertex(I)
-Map.add_vertex(J)
-Map.add_vertex(K)
-Map.add_vertex(L)
-Map.add_vertex(M)
-Map.add_vertex(N)
+arthur = Vertex("Arthur's House",1,6)
+jared = Vertex("Jared's House",1,7)
+trade = Vertex("Trade Post",1,4)
+general = Vertex("General Store",3,4)
+dutch = Vertex("Dutch's House",3,6)
+tom = Vertex("Tom's House",3,7)
+sheriffs = Vertex("Sheriff's Office",4,6)
+cornwall = Vertex("Leviticus Cornwall Estate",5,1)
+bank = Vertex("Town Bank",5,4)
+courtyard = Vertex("Courtyard",5,6)
+stable = Vertex("Horse Stable",5,7)
+hall = Vertex("Town Hall",6,4)
+office = Vertex("Post Office",6,8)
+army = Vertex("Army Recruitment",7,3)
+micah = Vertex("Micah's House",7,4)
+saloon = Vertex("Saloon",7,6)
+grave = Vertex("Graveyard",7,7)
+hotel = Vertex("Hotel",7,6)
+ranch = Vertex("Emerald Ranch",9,5)
 
-#A Vertex
-A.add_edge(B.value)
-A.add_edge(D.value)
-A.add_edge(E.value)
-Map.add_edge(A,B)
-Map.add_edge(A,D)
-Map.add_edge(A,E)
-A.add_building("Arthur's House","Top")
-A.add_building("Trade Post","Bottom")
-
-#B Vertex
-B.add_edge(A.value)
-B.add_edge(D.value)
-B.add_edge(C.value)
-B.add_edge(E.value)
-Map.add_edge(B,A)
-Map.add_edge(B,D)
-Map.add_edge(B,C)
-Map.add_edge(B,E)
-B.add_building("Arthur's House","Left")
-B.add_building("Dutch's House","Right")
-
-#C Vertex
-C.add_edge(B.value)
-Map.add_edge(C,B)
-C.add_building("Jared's House","Left")
-C.add_building("Tom's House","Right")
-
-#D Vertex
-D.add_edge(A.value)
-D.add_edge(B.value)
-D.add_edge(F.value)
-D.add_edge(E.value)
-Map.add_edge(D,A)
-Map.add_edge(D,B)
-Map.add_edge(D,F)
-Map.add_edge(D,E)
-D.add_building("General Store","Bottom")
-D.add_building("Dutch's House","Top")
-
-#E Vertex
-E.add_edge(A.value)
-E.add_edge(D.value)
-E.add_edge(B.value)
-E.add_edge(N.value)
-Map.add_edge(E,A)
-Map.add_edge(E,D)
-Map.add_edge(E,B)
-Map.add_edge(E,N)
-E.add_building("Trade Post","Left")
-E.add_building("General Store","Right")
-
-#F Vertex 
-F.add_edge(D.value)
-F.add_edge(G.value)
-Map.add_edge(F,D)
-Map.add_edge(F,G)
-F.add_building("Sheriffs Office","Top")
-
-#G Vertex
-G.add_edge(F.value)
-G.add_edge(H.value)
-Map.add_edge(G,F)
-Map.add_edge(G,H)
-G.add_building("Courtyard","Top")
-G.add_building("Town Bank","Bottom")
-
-#H Vertex
-H.add_edge(G.value)
-H.add_edge(I.value)
-H.add_edge(K.value)
-Map.add_edge(H,G)
-Map.add_edge(H,I)
-Map.add_edge(H,K)
-H.add_building("Town Hall","Bottom")
+#Graph dictionary
+rivendale_graph = {
+  arthur: set([(trade,2),(dutch,2),(jared,1)]),
+  jared: set([(arthur,1),(tom,2)]),
+  trade: set([(arthur,2),(general,2),(cornwall,7)]),
+  general: set([(trade,2),(dutch,2),(bank,3)]),
+  dutch: set([(tom,1),(arthur,2),(general,2)]),
+  tom: set([(jared,2),(dutch,1)]),
+  sheriffs: set([(dutch,1),(courtyard,1)]),
+  cornwall: set([(trade,7),(army,4)]),
+  bank: set([(courtyard,2),(hall,1)]),
+  courtyard: set([(bank,2),(saloon,2),(stable,2)]),
+  stable: set([(courtyard,2),(office,1),(grave,2)]),
+  hall: set([(bank,1),(micah,2)]),
+  office: set([(stable,1),(grave,1)]),
+  army: set([(cornwall,4),(micah,1)]),
+  micah: set([(hall,2),(army,1),(saloon,2),(ranch,2)]),
+  saloon: set([(grave,1),(courtyard,2),(hotel,1),(micah,2)]),
+  grave: set([(office,1),(stable,2),(saloon,1)]),
+  hotel: set([(saloon,1),(ranch,1)]),
+  ranch: set([(micah,2),(hotel,1)])
+}
 
 
-#I Vertex
-I.add_edge(H.value)
-I.add_edge(J.value)
-Map.add_edge(I,J)
-Map.add_edge(I,H)
-I.add_building("Courtyard","Left")
-I.add_building("Saloon","Right")
+def check(num):
+    for number in list(range(19)):
+        if int(num) == number:
+            return True
+    return False   
 
-#J Vertex
-J.add_edge(I.value)
-Map.add_edge(J,I)
-J.add_building("Horse Stable","Left")
-J.add_building("Post Office","Top")
-J.add_building("Graveyard","Right")
+def navigate():
+    buildings = (arthur,jared,trade,general,dutch,tom,sheriffs,cornwall,bank,courtyard,
+                 stable,hall,office,army,micah,saloon,grave,hotel,ranch)
+    ui1 = input("Where are you currently? ")
+    if not check(ui1):
+        print("Wrong input... restarting navigation process")
+        time.sleep(0.5)
+        navigate()
+    else:  
+        ui2 = input("Where are you headed? ")
+        if not check(ui2):
+            print("Wrong input... restarting navigation process")
+            time.sleep(0.5)
+            navigate()  
+        else:               
+            a_star(rivendale_graph,buildings[int(ui1)-1],buildings[int(ui2)-1])
 
+def start():
+    print("Welcome to Rivendale!\n")
+    time.sleep(0.5)
+    print("Buildings: ")
+    print("1 - Arthur's House, 2- Jared's House, 3- Trade Post, 4 - General Store,")
+    print("5 - Dutch's House, 6 - Tom's House, 7 - Sheriff's Office, 8 - Leviticus Cornwall Estate,")
+    print("9 - Town Bank, 10 - Courtyard, 11 - Horse Stable, 12 - Town Hall,")
+    print("13 - Post Office, 14 - Army Recruitment, 15 - Micah's House, 16 - Saloon")
+    print("17 - Graveyard, 18 - Hotel, 19 - Emerald Ranch")
+    time.sleep(0.5)
+    print("")
+    print("Please enter a building's numbers below for each of the questions asked:")
+    navigate()
 
-#K Vertex
-K.add_edge(H.value)
-K.add_edge(L.value)
-Map.add_edge(K,H)
-Map.add_edge(K,L)
-K.add_building("Saloon","Top")
-K.add_building("Micah's House","Bottom")
-
-#L Vertex
-L.add_edge(K.value)
-L.add_edge(M.value)
-Map.add_edge(L,M)
-Map.add_edge(L,K)
-L.add_building("Hotel","Top")
-L.add_building("Emerald Ranch","Right")
-
-#M Vertex
-M.add_edge(L.value)
-M.add_edge(N.value)
-Map.add_edge(M,L)
-Map.add_edge(M,N)
-M.add_building("Army Recruitment","Top")
-
-#N Vertex
-N.add_edge(M.value)
-N.add_edge(E.value)
-Map.add_edge(N,M)
-Map.add_edge(N,E)
-N.add_building("Leviticus Cornwall Estate","Bottom")
-
-print(a_star(Map.graph_dict,A.value,F.value))
+start()
